@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../core/enums/dia_semana.dart';
 import '../core/enums/origem_meta.dart';
+import '../core/utils/formatador_data.dart';
 import '../core/utils/gerador_id.dart';
 import '../data/repositories/meta_repository.dart';
 import '../models/meta_diaria.dart';
@@ -75,16 +76,19 @@ class SemanaViewModel extends ChangeNotifier {
     _metasDoDia = await _repository.buscarMetasDoDia(dia);
   }
 
-  Future<void> adicionarMetaManual(String titulo) async {
+  Future<void> adicionarMetaManual(String titulo, {DateTime? data}) async {
+    final dataAlvo = data ?? _diaSelecionado;
     await _repository.salvarMetaDiaria(
       MetaDiaria(
         id: gerarId(),
         titulo: titulo,
-        data: _diaSelecionado,
+        data: dataAlvo,
         origem: OrigemMeta.manual,
       ),
     );
-    await _carregarMetasDoDia(_diaSelecionado);
+    if (mesmoDia(dataAlvo, _diaSelecionado)) {
+      await _carregarMetasDoDia(_diaSelecionado);
+    }
     _totalMetasDaSemana++;
     notifyListeners();
   }
