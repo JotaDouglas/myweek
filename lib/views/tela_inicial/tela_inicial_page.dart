@@ -5,7 +5,6 @@ import '../../core/enums/periodo_dia.dart';
 import '../../core/theme/cores_app.dart';
 import '../../core/utils/formatador_data.dart';
 import '../../viewmodels/semana_viewmodel.dart';
-import '../semana/semana_page.dart';
 import 'widgets/indicador_progresso_diario.dart';
 
 class TelaInicialPage extends StatefulWidget {
@@ -44,6 +43,8 @@ class _TelaInicialPageState extends State<TelaInicialPage> {
               _cabecalho(info),
               const SizedBox(height: 20),
               _cartaoSaudacao(info),
+              const SizedBox(height: 16),
+              _cardTotalSemana(vm.totalMetasDaSemana),
               const SizedBox(height: 28),
               const Text(
                 'Progresso de hoje',
@@ -55,8 +56,6 @@ class _TelaInicialPageState extends State<TelaInicialPage> {
               ),
               const SizedBox(height: 12),
               IndicadorProgressoDiario(total: total, concluidas: concluidas),
-              const SizedBox(height: 28),
-              _botaoVerMetas(),
               const SizedBox(height: 32),
             ],
           ),
@@ -164,45 +163,58 @@ class _TelaInicialPageState extends State<TelaInicialPage> {
     );
   }
 
-  Widget _botaoVerMetas() {
-    return GestureDetector(
-      onTap: () async {
-        await Navigator.push(
-          context,
-          MaterialPageRoute(builder: (_) => const SemanaPage()),
-        );
-        if (mounted) context.read<SemanaViewModel>().inicializar();
-      },
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(vertical: 18),
-        decoration: BoxDecoration(
-          color: CoresApp.primaria,
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            BoxShadow(
-              color: CoresApp.primaria.withValues(alpha: 0.35),
-              blurRadius: 14,
-              offset: const Offset(0, 5),
+  Widget _cardTotalSemana(int total) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 44,
+            height: 44,
+            decoration: BoxDecoration(
+              color: CoresApp.primariaSuave,
+              borderRadius: BorderRadius.circular(12),
             ),
-          ],
-        ),
-        child: const Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              'Ver metas do dia',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 17,
-                fontWeight: FontWeight.w600,
-                letterSpacing: 0.3,
+            child: const Icon(
+              Icons.date_range_rounded,
+              color: CoresApp.primaria,
+              size: 22,
+            ),
+          ),
+          const SizedBox(width: 14),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Total da semana',
+                style: TextStyle(
+                  fontSize: 13,
+                  color: CoresApp.textoSecundario,
+                ),
               ),
-            ),
-            SizedBox(width: 8),
-            Icon(Icons.arrow_forward_rounded, color: Colors.white, size: 20),
-          ],
-        ),
+              const SizedBox(height: 2),
+              Text(
+                '$total ${total == 1 ? 'meta' : 'metas'}',
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: CoresApp.textoPrimario,
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }

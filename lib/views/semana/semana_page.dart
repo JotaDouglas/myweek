@@ -3,9 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../../core/theme/cores_app.dart';
 import '../../core/utils/formatador_data.dart';
-import '../../viewmodels/metas_recorrentes_viewmodel.dart';
 import '../../viewmodels/semana_viewmodel.dart';
-import '../metas_recorrentes/metas_recorrentes_page.dart';
 import 'widgets/card_meta_diaria.dart';
 import 'widgets/formulario_meta_diaria.dart';
 import 'widgets/seletor_dias_semana.dart';
@@ -38,17 +36,6 @@ class _SemanaPageState extends State<SemanaPage> {
     );
   }
 
-  void _irParaMetasRecorrentes() {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => ChangeNotifierProvider.value(
-          value: context.read<MetasRecorrentesViewModel>(),
-          child: const MetasRecorrentesPage(),
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final viewModel = context.watch<SemanaViewModel>();
@@ -66,13 +53,6 @@ class _SemanaPageState extends State<SemanaPage> {
             color: CoresApp.textoPrimario,
           ),
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.repeat_rounded, color: CoresApp.primaria),
-            tooltip: 'Metas recorrentes',
-            onPressed: _irParaMetasRecorrentes,
-          ),
-        ],
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

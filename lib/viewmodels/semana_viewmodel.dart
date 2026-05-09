@@ -13,9 +13,11 @@ class SemanaViewModel extends ChangeNotifier {
 
   DateTime _diaSelecionado = DateTime.now();
   List<MetaDiaria> _metasDoDia = [];
+  int _totalMetasDaSemana = 0;
 
   DateTime get diaSelecionado => _diaSelecionado;
   List<MetaDiaria> get metasDoDia => List.unmodifiable(_metasDoDia);
+  int get totalMetasDaSemana => _totalMetasDaSemana;
 
   Future<void> selecionarDia(DateTime dia) async {
     _diaSelecionado = dia;
@@ -26,6 +28,22 @@ class SemanaViewModel extends ChangeNotifier {
 
   Future<void> inicializar() async {
     await selecionarDia(_diaSelecionado);
+    await _carregarTotalDaSemana();
+  }
+
+  Future<void> _carregarTotalDaSemana() async {
+    final hoje = DateTime.now();
+    final inicioSemana = hoje.subtract(Duration(days: hoje.weekday - 1));
+
+    int total = 0;
+    for (int i = 0; i < 7; i++) {
+      final dia = inicioSemana.add(Duration(days: i));
+      await gerarMetasRecorrentesDoDia(dia);
+      final metas = await _repository.buscarMetasDoDia(dia);
+      total += metas.length;
+    }
+    _totalMetasDaSemana = total;
+    notifyListeners();
   }
 
   Future<void> gerarMetasRecorrentesDoDia(DateTime dia) async {
@@ -67,6 +85,7 @@ class SemanaViewModel extends ChangeNotifier {
       ),
     );
     await _carregarMetasDoDia(_diaSelecionado);
+    _totalMetasDaSemana++;
     notifyListeners();
   }
 
