@@ -72,26 +72,13 @@ class _TelaInicialPageState extends State<TelaInicialPage> {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              info.saudacaoCurta,
-              style: TextStyle(
-                fontSize: 14,
-                color: cores.textoSecundario,
-                fontWeight: FontWeight.w400,
-              ),
-            ),
-            Text(
-              'My Week',
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-                color: cores.textoPrimario,
-              ),
-            ),
-          ],
+        Text(
+          'MyWeek',
+          style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+            color: cores.textoPrimario,
+          ),
         ),
         const Spacer(),
         _BotaoCabecalho(
