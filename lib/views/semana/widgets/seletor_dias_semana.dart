@@ -15,7 +15,7 @@ class SeletorDiasSemana extends StatelessWidget {
     final hoje = DateTime.now();
     final diaSelecionado = viewModel.diaSelecionado;
 
-    final diasDaSemana = _obterDiasDaSemanaAtual(hoje);
+    final diasDaSemana = _obterDiasDaSemana(diaSelecionado);
 
     return SizedBox(
       height: 72,
@@ -40,11 +40,9 @@ class SeletorDiasSemana extends StatelessWidget {
     );
   }
 
-  List<DateTime> _obterDiasDaSemanaAtual(DateTime hoje) {
-    final segundaFeira = hoje.subtract(
-      Duration(days: hoje.weekday - DateTime.monday),
-    );
-    return List.generate(7, (i) => segundaFeira.add(Duration(days: i)));
+  List<DateTime> _obterDiasDaSemana(DateTime referencia) {
+    final domingo = referencia.subtract(Duration(days: referencia.weekday % 7));
+    return List.generate(7, (i) => domingo.add(Duration(days: i)));
   }
 }
 

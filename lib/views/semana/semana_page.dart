@@ -24,6 +24,31 @@ class _SemanaPageState extends State<SemanaPage> {
     });
   }
 
+  Future<void> _abrirCalendario() async {
+    final viewModel = context.read<SemanaViewModel>();
+    final hoje = DateTime.now();
+    final resultado = await showDatePicker(
+      context: context,
+      initialDate: viewModel.diaSelecionado,
+      firstDate: hoje.subtract(const Duration(days: 365)),
+      lastDate: hoje.add(const Duration(days: 365)),
+      builder: (context, child) => Theme(
+        data: Theme.of(context).copyWith(
+          colorScheme: const ColorScheme.light(
+            primary: CoresApp.primaria,
+            onPrimary: Colors.white,
+            surface: CoresApp.fundoCard,
+            onSurface: CoresApp.textoPrimario,
+          ),
+        ),
+        child: child!,
+      ),
+    );
+    if (resultado != null && context.mounted) {
+      viewModel.selecionarDia(resultado);
+    }
+  }
+
   void _abrirFormulario() {
     showModalBottomSheet(
       context: context,
@@ -45,6 +70,12 @@ class _SemanaPageState extends State<SemanaPage> {
       appBar: AppBar(
         backgroundColor: CoresApp.fundo,
         elevation: 0,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.calendar_month_outlined, color: CoresApp.textoPrimario),
+            onPressed: _abrirCalendario,
+          ),
+        ],
         title: const Text(
           'My Week',
           style: TextStyle(

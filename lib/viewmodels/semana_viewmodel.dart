@@ -34,7 +34,7 @@ class SemanaViewModel extends ChangeNotifier {
 
   Future<void> _carregarTotalDaSemana() async {
     final hoje = DateTime.now();
-    final inicioSemana = hoje.subtract(Duration(days: hoje.weekday - 1));
+    final inicioSemana = hoje.subtract(Duration(days: hoje.weekday % 7));
 
     int total = 0;
     for (int i = 0; i < 7; i++) {
