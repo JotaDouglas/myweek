@@ -1,5 +1,5 @@
 ---
-título: Etapa 002 — Tela inicial com saudação dinâmica
+título: Etapa 002 — Tela inicial, navbar e configurações
 data: 2026-05-09
 status: concluída
 tags:
@@ -8,37 +8,68 @@ tags:
   - etapa
 ---
 
-# Etapa 002 — Tela inicial com saudação dinâmica
+# Etapa 002 — Tela inicial, navbar e configurações
 
 ## Contexto
 
-O app passava a abrir direto na tela de semana. Esta etapa cria uma `TelaInicialPage` que serve como home screen: saudação baseada no período do dia (manhã/tarde/noite), com identidade visual distinta para cada período, e um indicador circular de progresso das metas do dia.
+O app abria direto na `SemanaPage`. Esta etapa adiciona uma tela inicial com saudação dinâmica por período do dia, indicador de progresso das metas de hoje, card com total da semana, navegação por bottom navbar e uma tela de configurações estruturada.
 
 ---
 
 ## Comportamento
 
-### Saudação dinâmica
+### Saudação dinâmica por período
 
-| Período | Horário | Emoji | Saudação |
-|---------|---------|-------|----------|
-| Manhã | 5h–12h | ☀️ | Bom dia! |
-| Tarde | 12h–18h | ⛅ | Boa tarde! |
-| Noite | 18h–5h | 🌙 | Boa noite! |
+| Período | Horário | Ícone Material | Saudação |
+|---------|---------|----------------|----------|
+| Manhã | 5h–12h | `Icons.wb_sunny_rounded` | Bom dia! |
+| Tarde | 12h–18h | `Icons.light_mode_rounded` | Boa tarde! |
+| Noite | 18h–5h | `Icons.nightlight_round` | Boa noite! |
 
-Cada período tem um gradiente de fundo, cor de texto e accent distintos — determinados em tempo de execução via `periodoAtual()`.
+O ícone e o texto de saudação variam pelo período; as cores permanecem fixas no tema do app (`CoresApp.primaria`).
 
-### Indicador de progresso
+> [!note] Decisão de design
+> A abordagem inicial usava cores dinâmicas por período (gradientes, accents e textos distintos). Foi descartada em favor do tema fixo — apenas ícone e saudação variam. Emojis foram substituídos por Material Icons por falha de renderização com `fontFamily` customizada.
 
-Exibe um anel circular (`CircularProgressIndicator`) com:
-- Percentual de conclusão centralizado no anel
+### Indicador de progresso (hoje)
+
+Card branco com anel circular (`CircularProgressIndicator`) mostrando:
+- Percentual de conclusão centralizado no anel (`CoresApp.primaria`)
 - Contador "X de Y concluídas"
-- Mensagem motivacional adaptada ao progresso
+- Mensagem motivacional adaptada ao percentual
 
-### Navegação
+| Percentual | Mensagem |
+|------------|----------|
+| Sem metas | Nenhuma meta para hoje |
+| 0% | Vamos começar! |
+| 1–49% | Bom progresso, continue! |
+| 50–99% | Quase lá, não pare! |
+| 100% | Dia completo! Parabéns! |
 
-Botão "Ver metas do dia" → abre `SemanaPage` via `Navigator.push`.
-Ao retornar, chama `inicializar()` no `SemanaViewModel` para recarregar os dados de hoje.
+### Card de total semanal
+
+Card compacto exibindo a soma de todas as metas dos 7 dias da semana atual.
+Atualiza ao adicionar uma meta manual (incremento direto) e ao inicializar o app (recálculo completo).
+Pluralização: "1 meta" / "N metas".
+
+### Navegação — bottom navbar
+
+`NavigationBar` (Material 3) com `IndexedStack` preservando o estado de cada aba.
+
+| Índice | Label | Ícone | Destino |
+|--------|-------|-------|---------|
+| 0 | Home | `home_rounded` | `TelaInicialPage` |
+| 1 | Metas | `task_alt_rounded` | `SemanaPage` |
+| 2 | Configurações | `settings_rounded` | `ConfiguracoesPage` |
+
+### Tela de configurações
+
+Lista de opções estilizadas (`_ItemConfiguracao`): ícone em pill verde + título + subtítulo + chevron.
+Ao tocar, abre a tela destino via `Navigator.push`.
+
+| Opção | Destino |
+|-------|---------|
+| Metas recorrentes | `MetasRecorrentesPage` |
 
 ---
 
@@ -46,53 +77,65 @@ Ao retornar, chama `inicializar()` no `SemanaViewModel` para recarregar os dados
 
 ### `lib/core/enums/periodo_dia.dart`
 
-Enum `PeriodoDia` com três valores: `manha`, `tarde`, `noite`.
-Função `periodoAtual()` retorna o período baseado em `DateTime.now().hour`.
+Enum `PeriodoDia`: `manha`, `tarde`, `noite`.
+Função `periodoAtual()` determina o período por `DateTime.now().hour`.
 
 ### `lib/views/tela_inicial/tela_inicial_page.dart`
 
 `TelaInicialPage` — StatefulWidget.
 
 - `initState` chama `SemanaViewModel.inicializar()` via `postFrameCallback`
-- `build` deriva o tema do período e calcula total/concluídas a partir de `vm.metasDoDia`
-- `_TemaPeriodo` — classe privada que agrupa gradiente, corTexto, corAccent, emoji e saudação
-- Fundo em gradiente full-screen sem AppBar, usando `SafeArea` + `Column` com `Spacer`
+- Layout: header (saudação curta + "My Week" + sino) → cartão saudação verde → card total semana → card progresso hoje
+- `_InfoPeriodo` — classe privada com `icone`, `saudacao` e `saudacaoCurta`
+- `_cartaoSaudacao` — card verde com ícone do período, saudação, data por extenso e número do dia como watermark
+- `_cardTotalSemana` — card branco compacto com ícone de calendário e contagem semanal
 
 ### `lib/views/tela_inicial/widgets/indicador_progresso_diario.dart`
 
 `IndicadorProgressoDiario` — StatelessWidget.
 
-Recebe `total`, `concluidas`, `corAccent` e `corTexto`.
-Renderiza card translúcido com anel de progresso e mensagem motivacional.
+Recebe `total` e `concluidas`. Usa `CoresApp.primaria` e `CoresApp.primariaSuave` fixos.
+Layout horizontal: anel circular (88×88) à esquerda, stats à direita.
+
+### `lib/views/navegacao/navegacao_page.dart`
+
+`NavegacaoPage` — StatefulWidget. Shell da navegação principal.
+
+- `IndexedStack` com as 3 páginas (estado preservado ao trocar aba)
+- `NavigationBar` com `indicatorColor: CoresApp.primariaSuave`
+
+### `lib/views/configuracoes/configuracoes_page.dart`
+
+`ConfiguracoesPage` — StatelessWidget.
+
+Lista de opções de configuração. Cada item é um `_ItemConfiguracao` (widget privado) com ícone em container arredondado, título, subtítulo e chevron. Navega via `Navigator.push`.
 
 ---
 
 ## Arquivos modificados
 
-### `lib/core/theme/cores_app.dart`
-
-Adicionados 12 valores de cor para os três períodos:
-
-| Constante | Valor | Uso |
-|-----------|-------|-----|
-| `fundoManha1` / `fundoManha2` | `#FFFBF2` / `#FFE5C0` | Gradiente manhã |
-| `accentManha` | `#D4873A` | Accent âmbar |
-| `textoManha` | `#3D2B1F` | Texto sobre fundo claro |
-| `fundoTarde1` / `fundoTarde2` | `#FFF4EC` / `#FFD4A0` | Gradiente tarde |
-| `accentTarde` | `#E07020` | Accent laranja-dourado |
-| `textoTarde` | `#3E2010` | Texto sobre fundo quente |
-| `fundoNoite1` / `fundoNoite2` | `#1C2540` / `#0D1420` | Gradiente noite |
-| `accentNoite` | `#8B9FE8` | Accent índigo suave |
-| `textoNoite` | `#E8ECF8` | Texto sobre fundo escuro |
-
 ### `lib/core/utils/formatador_data.dart`
 
 Adicionada `formatarDataExtenso(DateTime)` → ex.: `"Sexta, 09 de maio"`.
-Usa `DiaSemana.nomeCompleto` e lista de meses em português sem dependência de `intl`.
+Usa `DiaSemana.nomeCompleto` e lista de meses em português, sem dependência de `intl`.
+
+### `lib/viewmodels/semana_viewmodel.dart`
+
+| Adição | Descrição |
+|--------|-----------|
+| `int _totalMetasDaSemana` | Campo interno com total da semana |
+| `int get totalMetasDaSemana` | Exposição pública do total |
+| `_carregarTotalDaSemana()` | Gera metas recorrentes para os 7 dias da semana atual e soma o total |
+| `inicializar()` | Chama `_carregarTotalDaSemana()` após `selecionarDia()` |
+| `adicionarMetaManual()` | Incrementa `_totalMetasDaSemana` diretamente ao adicionar |
+
+### `lib/views/semana/semana_page.dart`
+
+Removidos: método `_irParaMetasRecorrentes()`, bloco `actions` do AppBar e imports de `MetasRecorrentesPage`/`MetasRecorrentesViewModel` — navegação agora é responsabilidade do navbar.
 
 ### `lib/app/my_week_app.dart`
 
-Home alterada de `SemanaPage` para `TelaInicialPage`.
+Home alterada de `SemanaPage` → `NavegacaoPage`.
 
 ---
 
@@ -101,13 +144,21 @@ Home alterada de `SemanaPage` para `TelaInicialPage`.
 ```
 lib/
 ├── core/
-│   └── enums/
-│       └── periodo_dia.dart             ← NOVO
+│   ├── enums/
+│   │   └── periodo_dia.dart                        ← NOVO
+│   └── utils/
+│       └── formatador_data.dart                    ← MODIFICADO
+├── viewmodels/
+│   └── semana_viewmodel.dart                       ← MODIFICADO
 └── views/
+    ├── navegacao/
+    │   └── navegacao_page.dart                     ← NOVO
+    ├── configuracoes/
+    │   └── configuracoes_page.dart                 ← NOVO
     └── tela_inicial/
-        ├── tela_inicial_page.dart       ← NOVO
+        ├── tela_inicial_page.dart                  ← NOVO
         └── widgets/
-            └── indicador_progresso_diario.dart  ← NOVO
+            └── indicador_progresso_diario.dart     ← NOVO
 ```
 
 ---
@@ -117,7 +168,7 @@ lib/
 > [!success] flutter analyze
 > Nenhum erro encontrado.
 
-A tela inicial exibe saudação, data por extenso e progresso das metas do dia. A identidade visual muda dinamicamente conforme o horário. Ao tocar em "Ver metas do dia", o usuário vai para `SemanaPage`; ao voltar, os dados de hoje são recarregados automaticamente.
+O app abre na tela inicial com saudação dinâmica, card de total semanal e progresso do dia. A navegação principal acontece pelo bottom navbar com três abas. Configurações expõe uma lista de opções extensível — por ora com acesso às metas recorrentes.
 
 ---
 
