@@ -5,7 +5,7 @@ import '../core/theme/cores_app.dart';
 import '../data/repositories/meta_repository_memoria.dart';
 import '../viewmodels/metas_recorrentes_viewmodel.dart';
 import '../viewmodels/semana_viewmodel.dart';
-import '../views/semana/semana_page.dart';
+import '../views/tela_inicial/tela_inicial_page.dart';
 
 class MyWeekApp extends StatelessWidget {
   const MyWeekApp({super.key});
@@ -32,7 +32,7 @@ class MyWeekApp extends StatelessWidget {
           fontFamily: 'SF Pro Display',
           useMaterial3: true,
         ),
-        home: const SemanaPage(),
+        home: const TelaInicialPage(),
       ),
     );
   }
