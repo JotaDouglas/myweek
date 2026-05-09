@@ -1,0 +1,129 @@
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../../core/theme/cores_app.dart';
+import '../../core/utils/formatador_data.dart';
+import '../../viewmodels/metas_recorrentes_viewmodel.dart';
+import '../../viewmodels/semana_viewmodel.dart';
+import '../metas_recorrentes/metas_recorrentes_page.dart';
+import 'widgets/card_meta_diaria.dart';
+import 'widgets/formulario_meta_diaria.dart';
+import 'widgets/seletor_dias_semana.dart';
+
+class SemanaPage extends StatefulWidget {
+  const SemanaPage({super.key});
+
+  @override
+  State<SemanaPage> createState() => _SemanaPageState();
+}
+
+class _SemanaPageState extends State<SemanaPage> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<SemanaViewModel>().inicializar();
+    });
+  }
+
+  void _abrirFormulario() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: CoresApp.fundoCard,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (_) => const FormularioMetaDiaria(),
+    );
+  }
+
+  void _irParaMetasRecorrentes() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => ChangeNotifierProvider.value(
+          value: context.read<MetasRecorrentesViewModel>(),
+          child: const MetasRecorrentesPage(),
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final viewModel = context.watch<SemanaViewModel>();
+
+    return Scaffold(
+      backgroundColor: CoresApp.fundo,
+      appBar: AppBar(
+        backgroundColor: CoresApp.fundo,
+        elevation: 0,
+        title: const Text(
+          'My Week',
+          style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+            color: CoresApp.textoPrimario,
+          ),
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.repeat_rounded, color: CoresApp.primaria),
+            tooltip: 'Metas recorrentes',
+            onPressed: _irParaMetasRecorrentes,
+          ),
+        ],
+      ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(height: 8),
+          const SeletorDiasSemana(),
+          const SizedBox(height: 20),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Text(
+              formatarData(viewModel.diaSelecionado),
+              style: const TextStyle(
+                fontSize: 14,
+                color: CoresApp.textoSecundario,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+          const SizedBox(height: 12),
+          Expanded(
+            child: viewModel.metasDoDia.isEmpty
+                ? const _EstadoVazio()
+                : ListView.builder(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    itemCount: viewModel.metasDoDia.length,
+                    itemBuilder: (context, index) => CardMetaDiaria(
+                      meta: viewModel.metasDoDia[index],
+                    ),
+                  ),
+          ),
+        ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _abrirFormulario,
+        backgroundColor: CoresApp.primaria,
+        child: const Icon(Icons.add, color: Colors.white),
+      ),
+    );
+  }
+}
+
+class _EstadoVazio extends StatelessWidget {
+  const _EstadoVazio();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(
+      child: Text(
+        'Nenhuma meta para este dia',
+        style: TextStyle(color: CoresApp.textoSecundario, fontSize: 14),
+      ),
+    );
+  }
+}

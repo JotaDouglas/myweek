@@ -1,0 +1,4 @@
+enum OrigemMeta {
+  manual,
+  recorrente,
+}
