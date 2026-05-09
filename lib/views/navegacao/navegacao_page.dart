@@ -17,6 +17,8 @@ class _NavegacaoPageState extends State<NavegacaoPage> {
 
   @override
   Widget build(BuildContext context) {
+    final cores = context.cores;
+
     return Scaffold(
       body: IndexedStack(
         index: _indiceAtual,
@@ -27,25 +29,25 @@ class _NavegacaoPageState extends State<NavegacaoPage> {
         ],
       ),
       bottomNavigationBar: NavigationBar(
-        backgroundColor: Colors.white,
-        indicatorColor: CoresApp.primariaSuave,
+        backgroundColor: cores.fundoCard,
+        indicatorColor: cores.primariaSuave,
         selectedIndex: _indiceAtual,
         onDestinationSelected: (indice) =>
             setState(() => _indiceAtual = indice),
-        destinations: const [
+        destinations: [
           NavigationDestination(
-            icon: Icon(Icons.home_outlined),
-            selectedIcon: Icon(Icons.home_rounded, color: CoresApp.primaria),
+            icon: const Icon(Icons.home_outlined),
+            selectedIcon: Icon(Icons.home_rounded, color: cores.primaria),
             label: 'Home',
           ),
           NavigationDestination(
-            icon: Icon(Icons.task_alt_outlined),
-            selectedIcon: Icon(Icons.task_alt_rounded, color: CoresApp.primaria),
+            icon: const Icon(Icons.task_alt_outlined),
+            selectedIcon: Icon(Icons.task_alt_rounded, color: cores.primaria),
             label: 'Metas',
           ),
           NavigationDestination(
-            icon: Icon(Icons.settings_outlined),
-            selectedIcon: Icon(Icons.settings_rounded, color: CoresApp.primaria),
+            icon: const Icon(Icons.settings_outlined),
+            selectedIcon: Icon(Icons.settings_rounded, color: cores.primaria),
             label: 'Configurações',
           ),
         ],

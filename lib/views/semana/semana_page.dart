@@ -25,6 +25,7 @@ class _SemanaPageState extends State<SemanaPage> {
   }
 
   Future<void> _abrirCalendario() async {
+    final cores = context.cores;
     final viewModel = context.read<SemanaViewModel>();
     final hoje = DateTime.now();
     final resultado = await showDatePicker(
@@ -34,11 +35,9 @@ class _SemanaPageState extends State<SemanaPage> {
       lastDate: hoje.add(const Duration(days: 365)),
       builder: (context, child) => Theme(
         data: Theme.of(context).copyWith(
-          colorScheme: const ColorScheme.light(
-            primary: CoresApp.primaria,
-            onPrimary: Colors.white,
-            surface: CoresApp.fundoCard,
-            onSurface: CoresApp.textoPrimario,
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: cores.primaria,
+            brightness: Theme.of(context).brightness,
           ),
         ),
         child: child!,
@@ -50,10 +49,11 @@ class _SemanaPageState extends State<SemanaPage> {
   }
 
   void _abrirFormulario() {
+    final cores = context.cores;
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: CoresApp.fundoCard,
+      backgroundColor: cores.fundoCard,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -63,25 +63,26 @@ class _SemanaPageState extends State<SemanaPage> {
 
   @override
   Widget build(BuildContext context) {
+    final cores = context.cores;
     final viewModel = context.watch<SemanaViewModel>();
 
     return Scaffold(
-      backgroundColor: CoresApp.fundo,
+      backgroundColor: cores.fundo,
       appBar: AppBar(
-        backgroundColor: CoresApp.fundo,
+        backgroundColor: cores.fundo,
         elevation: 0,
         actions: [
           IconButton(
-            icon: const Icon(Icons.calendar_month_outlined, color: CoresApp.textoPrimario),
+            icon: Icon(Icons.calendar_month_outlined, color: cores.textoPrimario),
             onPressed: _abrirCalendario,
           ),
         ],
-        title: const Text(
+        title: Text(
           'My Week',
           style: TextStyle(
             fontSize: 22,
             fontWeight: FontWeight.bold,
-            color: CoresApp.textoPrimario,
+            color: cores.textoPrimario,
           ),
         ),
       ),
@@ -95,9 +96,9 @@ class _SemanaPageState extends State<SemanaPage> {
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Text(
               formatarData(viewModel.diaSelecionado),
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 14,
-                color: CoresApp.textoSecundario,
+                color: cores.textoSecundario,
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -105,7 +106,7 @@ class _SemanaPageState extends State<SemanaPage> {
           const SizedBox(height: 12),
           Expanded(
             child: viewModel.metasDoDia.isEmpty
-                ? const _EstadoVazio()
+                ? _EstadoVazio()
                 : ListView.builder(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     itemCount: viewModel.metasDoDia.length,
@@ -118,7 +119,7 @@ class _SemanaPageState extends State<SemanaPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _abrirFormulario,
-        backgroundColor: CoresApp.primaria,
+        backgroundColor: cores.primaria,
         child: const Icon(Icons.add, color: Colors.white),
       ),
     );
@@ -126,14 +127,12 @@ class _SemanaPageState extends State<SemanaPage> {
 }
 
 class _EstadoVazio extends StatelessWidget {
-  const _EstadoVazio();
-
   @override
   Widget build(BuildContext context) {
-    return const Center(
+    return Center(
       child: Text(
         'Nenhuma meta para este dia',
-        style: TextStyle(color: CoresApp.textoSecundario, fontSize: 14),
+        style: TextStyle(color: context.cores.textoSecundario, fontSize: 14),
       ),
     );
   }

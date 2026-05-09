@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../../core/enums/periodo_dia.dart';
 import '../../core/theme/cores_app.dart';
+import '../../core/theme/tema_provider.dart';
 import '../../core/utils/formatador_data.dart';
 import '../../viewmodels/semana_viewmodel.dart';
 import 'widgets/indicador_progresso_diario.dart';
@@ -25,6 +26,7 @@ class _TelaInicialPageState extends State<TelaInicialPage> {
 
   @override
   Widget build(BuildContext context) {
+    final cores = context.cores;
     final vm = context.watch<SemanaViewModel>();
     final info = _infoDoPeriodo(periodoAtual());
 
@@ -32,7 +34,7 @@ class _TelaInicialPageState extends State<TelaInicialPage> {
     final concluidas = vm.metasDoDia.where((m) => m.concluida).length;
 
     return Scaffold(
-      backgroundColor: CoresApp.fundo,
+      backgroundColor: cores.fundo,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -40,18 +42,18 @@ class _TelaInicialPageState extends State<TelaInicialPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 24),
-              _cabecalho(info),
+              _cabecalho(cores, info),
               const SizedBox(height: 20),
               _cartaoSaudacao(info),
               const SizedBox(height: 16),
-              _cardTotalSemana(vm.totalMetasDaSemana),
+              _cardTotalSemana(cores, vm.totalMetasDaSemana),
               const SizedBox(height: 28),
-              const Text(
+              Text(
                 'Progresso de hoje',
                 style: TextStyle(
                   fontSize: 17,
                   fontWeight: FontWeight.bold,
-                  color: CoresApp.textoPrimario,
+                  color: cores.textoPrimario,
                 ),
               ),
               const SizedBox(height: 12),
@@ -64,7 +66,9 @@ class _TelaInicialPageState extends State<TelaInicialPage> {
     );
   }
 
-  Widget _cabecalho(_InfoPeriodo info) {
+  Widget _cabecalho(CoresApp cores, _InfoPeriodo info) {
+    final tema = context.watch<TemaProvider>();
+
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -73,53 +77,45 @@ class _TelaInicialPageState extends State<TelaInicialPage> {
           children: [
             Text(
               info.saudacaoCurta,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 14,
-                color: CoresApp.textoSecundario,
+                color: cores.textoSecundario,
                 fontWeight: FontWeight.w400,
               ),
             ),
-            const Text(
+            Text(
               'My Week',
               style: TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
-                color: CoresApp.textoPrimario,
+                color: cores.textoPrimario,
               ),
             ),
           ],
         ),
         const Spacer(),
-        Container(
-          width: 44,
-          height: 44,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            shape: BoxShape.circle,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.08),
-                blurRadius: 8,
-                offset: const Offset(0, 2),
-              ),
-            ],
-          ),
-          child: const Icon(
-            Icons.notifications_outlined,
-            color: CoresApp.textoPrimario,
-            size: 20,
-          ),
+        _BotaoCabecalho(
+          icone: tema.isDark ? Icons.light_mode_rounded : Icons.dark_mode_rounded,
+          cores: cores,
+          onTap: tema.alternar,
+        ),
+        const SizedBox(width: 10),
+        _BotaoCabecalho(
+          icone: Icons.notifications_outlined,
+          cores: cores,
+          onTap: () {},
         ),
       ],
     );
   }
 
   Widget _cartaoSaudacao(_InfoPeriodo info) {
+    final cores = context.cores;
     final hoje = DateTime.now();
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 22),
       decoration: BoxDecoration(
-        color: CoresApp.primaria,
+        color: cores.primaria,
         borderRadius: BorderRadius.circular(20),
       ),
       child: Row(
@@ -163,11 +159,11 @@ class _TelaInicialPageState extends State<TelaInicialPage> {
     );
   }
 
-  Widget _cardTotalSemana(int total) {
+  Widget _cardTotalSemana(CoresApp cores, int total) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: cores.fundoCard,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
@@ -183,12 +179,12 @@ class _TelaInicialPageState extends State<TelaInicialPage> {
             width: 44,
             height: 44,
             decoration: BoxDecoration(
-              color: CoresApp.primariaSuave,
+              color: cores.primariaSuave,
               borderRadius: BorderRadius.circular(12),
             ),
-            child: const Icon(
+            child: Icon(
               Icons.date_range_rounded,
-              color: CoresApp.primaria,
+              color: cores.primaria,
               size: 22,
             ),
           ),
@@ -196,20 +192,17 @@ class _TelaInicialPageState extends State<TelaInicialPage> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
+              Text(
                 'Total da semana',
-                style: TextStyle(
-                  fontSize: 13,
-                  color: CoresApp.textoSecundario,
-                ),
+                style: TextStyle(fontSize: 13, color: cores.textoSecundario),
               ),
               const SizedBox(height: 2),
               Text(
                 '$total ${total == 1 ? 'meta' : 'metas'}',
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
-                  color: CoresApp.textoPrimario,
+                  color: cores.textoPrimario,
                 ),
               ),
             ],
@@ -253,4 +246,39 @@ class _InfoPeriodo {
     required this.saudacao,
     required this.saudacaoCurta,
   });
+}
+
+class _BotaoCabecalho extends StatelessWidget {
+  final IconData icone;
+  final CoresApp cores;
+  final VoidCallback onTap;
+
+  const _BotaoCabecalho({
+    required this.icone,
+    required this.cores,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 44,
+        height: 44,
+        decoration: BoxDecoration(
+          color: cores.fundoCard,
+          shape: BoxShape.circle,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.08),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Icon(icone, color: cores.textoPrimario, size: 20),
+      ),
+    );
+  }
 }

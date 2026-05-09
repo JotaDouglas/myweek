@@ -13,14 +13,15 @@ class CardMetaRecorrente extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cores = context.cores;
     final dias = meta.diasDaSemana.map((d) => d.nome).join(', ');
 
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
       decoration: BoxDecoration(
-        color: CoresApp.fundoCard,
+        color: cores.fundoCard,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: CoresApp.divisor),
+        border: Border.all(color: cores.divisor),
       ),
       child: ListTile(
         contentPadding: const EdgeInsets.fromLTRB(16, 8, 8, 8),
@@ -29,17 +30,14 @@ class CardMetaRecorrente extends StatelessWidget {
           style: TextStyle(
             fontSize: 15,
             fontWeight: FontWeight.w500,
-            color: meta.ativa ? CoresApp.textoPrimario : CoresApp.textoSecundario,
+            color: meta.ativa ? cores.textoPrimario : cores.textoSecundario,
           ),
         ),
         subtitle: Padding(
           padding: const EdgeInsets.only(top: 4),
           child: Text(
             dias,
-            style: const TextStyle(
-              fontSize: 12,
-              color: CoresApp.textoSecundario,
-            ),
+            style: TextStyle(fontSize: 12, color: cores.textoSecundario),
           ),
         ),
         trailing: Row(
@@ -47,7 +45,7 @@ class CardMetaRecorrente extends StatelessWidget {
           children: [
             Switch(
               value: meta.ativa,
-              activeThumbColor: CoresApp.primaria,
+              activeThumbColor: cores.primaria,
               onChanged: (_) {
                 context
                     .read<MetasRecorrentesViewModel>()
@@ -55,11 +53,7 @@ class CardMetaRecorrente extends StatelessWidget {
               },
             ),
             IconButton(
-              icon: const Icon(
-                Icons.delete_outline,
-                size: 20,
-                color: CoresApp.textoSecundario,
-              ),
+              icon: Icon(Icons.delete_outline, size: 20, color: cores.textoSecundario),
               onPressed: () => _confirmarRemocao(context),
             ),
           ],

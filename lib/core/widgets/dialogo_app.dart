@@ -46,17 +46,18 @@ class DialogoApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final corAcao = destrutivo ? const Color(0xFFD94F4F) : CoresApp.primaria;
+    final cores = context.cores;
+    final corAcao = destrutivo ? CoresApp.destrutivo : cores.primaria;
     final corIconeFundo = destrutivo
-        ? const Color(0xFFD94F4F).withValues(alpha: 0.1)
-        : CoresApp.primariaSuave;
+        ? CoresApp.destrutivo.withValues(alpha: 0.1)
+        : cores.primariaSuave;
 
     return Dialog(
       backgroundColor: Colors.transparent,
       insetPadding: const EdgeInsets.symmetric(horizontal: 32),
       child: Container(
         decoration: BoxDecoration(
-          color: CoresApp.fundoCard,
+          color: cores.fundoCard,
           borderRadius: BorderRadius.circular(24),
           boxShadow: [
             BoxShadow(
@@ -87,10 +88,10 @@ class DialogoApp extends StatelessWidget {
               child: Text(
                 titulo,
                 textAlign: TextAlign.center,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 17,
                   fontWeight: FontWeight.w700,
-                  color: CoresApp.textoPrimario,
+                  color: cores.textoPrimario,
                   height: 1.3,
                 ),
               ),
@@ -101,15 +102,15 @@ class DialogoApp extends StatelessWidget {
               child: Text(
                 mensagem,
                 textAlign: TextAlign.center,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 14,
-                  color: CoresApp.textoSecundario,
+                  color: cores.textoSecundario,
                   height: 1.5,
                 ),
               ),
             ),
             const SizedBox(height: 28),
-            Container(height: 1, color: CoresApp.divisor),
+            Container(height: 1, color: cores.divisor),
             IntrinsicHeight(
               child: Row(
                 children: [
@@ -117,11 +118,11 @@ class DialogoApp extends StatelessWidget {
                     child: _BotaoDialogo(
                       label: labelCancelar,
                       onTap: () => Navigator.of(context).pop(false),
-                      cor: CoresApp.textoSecundario,
+                      cor: cores.textoSecundario,
                       negrito: false,
                     ),
                   ),
-                  Container(width: 1, color: CoresApp.divisor),
+                  Container(width: 1, color: cores.divisor),
                   Expanded(
                     child: _BotaoDialogo(
                       label: labelConfirmar,

@@ -14,13 +14,14 @@ class IndicadorProgressoDiario extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cores = context.cores;
     final percentual = total == 0 ? 0.0 : concluidas / total;
     final percentualTexto = '${(percentual * 100).round()}%';
 
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: cores.fundoCard,
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
@@ -42,16 +43,14 @@ class IndicadorProgressoDiario extends StatelessWidget {
                   child: CircularProgressIndicator(
                     value: percentual,
                     strokeWidth: 8,
-                    backgroundColor: CoresApp.primariaSuave,
-                    valueColor: const AlwaysStoppedAnimation<Color>(
-                      CoresApp.primaria,
-                    ),
+                    backgroundColor: cores.primariaSuave,
+                    valueColor: AlwaysStoppedAnimation<Color>(cores.primaria),
                   ),
                 ),
                 Text(
                   percentualTexto,
-                  style: const TextStyle(
-                    color: CoresApp.primaria,
+                  style: TextStyle(
+                    color: cores.primaria,
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
@@ -66,18 +65,18 @@ class IndicadorProgressoDiario extends StatelessWidget {
               children: [
                 Text(
                   '$concluidas de $total concluídas',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
-                    color: CoresApp.textoPrimario,
+                    color: cores.textoPrimario,
                   ),
                 ),
                 const SizedBox(height: 6),
                 Text(
                   _mensagemMotivacional(percentual),
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 13,
-                    color: CoresApp.textoSecundario,
+                    color: cores.textoSecundario,
                     height: 1.4,
                   ),
                 ),

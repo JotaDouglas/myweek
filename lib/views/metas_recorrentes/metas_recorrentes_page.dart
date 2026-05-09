@@ -23,10 +23,11 @@ class _MetasRecorrentesPageState extends State<MetasRecorrentesPage> {
   }
 
   void _abrirFormulario() {
+    final cores = context.cores;
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: CoresApp.fundoCard,
+      backgroundColor: cores.fundoCard,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -39,34 +40,32 @@ class _MetasRecorrentesPageState extends State<MetasRecorrentesPage> {
 
   @override
   Widget build(BuildContext context) {
+    final cores = context.cores;
     final viewModel = context.watch<MetasRecorrentesViewModel>();
 
     return Scaffold(
-      backgroundColor: CoresApp.fundo,
+      backgroundColor: cores.fundo,
       appBar: AppBar(
-        backgroundColor: CoresApp.fundo,
+        backgroundColor: cores.fundo,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: CoresApp.textoPrimario),
+          icon: Icon(Icons.arrow_back, color: cores.textoPrimario),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        title: const Text(
+        title: Text(
           'Metas recorrentes',
           style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,
-            color: CoresApp.textoPrimario,
+            color: cores.textoPrimario,
           ),
         ),
       ),
       body: viewModel.metasRecorrentes.isEmpty
-          ? const Center(
+          ? Center(
               child: Text(
                 'Nenhuma meta recorrente cadastrada',
-                style: TextStyle(
-                  color: CoresApp.textoSecundario,
-                  fontSize: 14,
-                ),
+                style: TextStyle(color: cores.textoSecundario, fontSize: 14),
               ),
             )
           : ListView.builder(
@@ -78,7 +77,7 @@ class _MetasRecorrentesPageState extends State<MetasRecorrentesPage> {
             ),
       floatingActionButton: FloatingActionButton(
         onPressed: _abrirFormulario,
-        backgroundColor: CoresApp.primaria,
+        backgroundColor: cores.primaria,
         child: const Icon(Icons.add, color: Colors.white),
       ),
     );

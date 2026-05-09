@@ -13,12 +13,14 @@ class CardMetaDiaria extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cores = context.cores;
+
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
       decoration: BoxDecoration(
-        color: CoresApp.fundoCard,
+        color: cores.fundoCard,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: CoresApp.divisor),
+        border: Border.all(color: cores.divisor),
       ),
       child: ListTile(
         contentPadding: const EdgeInsets.fromLTRB(12, 4, 8, 4),
@@ -31,10 +33,9 @@ class CardMetaDiaria extends StatelessWidget {
             height: 20,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: meta.concluida ? CoresApp.primaria : Colors.transparent,
+              color: meta.concluida ? cores.primaria : Colors.transparent,
               border: Border.all(
-                color:
-                    meta.concluida ? CoresApp.primaria : CoresApp.textoSecundario,
+                color: meta.concluida ? cores.primaria : cores.textoSecundario,
                 width: 1.5,
               ),
             ),
@@ -47,19 +48,14 @@ class CardMetaDiaria extends StatelessWidget {
           meta.titulo,
           style: TextStyle(
             fontSize: 15,
-            color:
-                meta.concluida ? CoresApp.textoSecundario : CoresApp.textoPrimario,
+            color: meta.concluida ? cores.textoSecundario : cores.textoPrimario,
             decoration:
                 meta.concluida ? TextDecoration.lineThrough : TextDecoration.none,
-            decorationColor: CoresApp.textoSecundario,
+            decorationColor: cores.textoSecundario,
           ),
         ),
         trailing: IconButton(
-          icon: const Icon(
-            Icons.delete_outline,
-            size: 20,
-            color: CoresApp.textoSecundario,
-          ),
+          icon: Icon(Icons.delete_outline, size: 20, color: cores.textoSecundario),
           onPressed: () => _confirmarRemocao(context),
         ),
       ),

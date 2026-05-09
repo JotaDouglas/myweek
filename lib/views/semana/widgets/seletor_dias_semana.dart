@@ -61,20 +61,21 @@ class _BotaoDia extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cores = context.cores;
     final diaSemana = diaDaData(data);
 
     Color fundo;
     Color corTexto;
 
     if (selecionado) {
-      fundo = CoresApp.diaSelecionado;
+      fundo = cores.diaSelecionado;
       corTexto = Colors.white;
     } else if (ehHoje) {
-      fundo = CoresApp.diaAtual;
-      corTexto = CoresApp.primaria;
+      fundo = cores.diaAtual;
+      corTexto = cores.primaria;
     } else {
-      fundo = CoresApp.fundoCard;
-      corTexto = CoresApp.textoPrimario;
+      fundo = cores.fundoCard;
+      corTexto = cores.textoPrimario;
     }
 
     return GestureDetector(
@@ -85,7 +86,7 @@ class _BotaoDia extends StatelessWidget {
           color: fundo,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: selecionado ? CoresApp.diaSelecionado : CoresApp.divisor,
+            color: selecionado ? cores.diaSelecionado : cores.divisor,
           ),
         ),
         child: Column(

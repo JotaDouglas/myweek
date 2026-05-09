@@ -29,6 +29,7 @@ class _FormularioMetaDiariaState extends State<FormularioMetaDiaria> {
   }
 
   Future<void> _selecionarData() async {
+    final cores = context.cores;
     final hoje = DateTime.now();
     final resultado = await showDatePicker(
       context: context,
@@ -37,11 +38,9 @@ class _FormularioMetaDiariaState extends State<FormularioMetaDiaria> {
       lastDate: hoje.add(const Duration(days: 365)),
       builder: (context, child) => Theme(
         data: Theme.of(context).copyWith(
-          colorScheme: const ColorScheme.light(
-            primary: CoresApp.primaria,
-            onPrimary: Colors.white,
-            surface: CoresApp.fundoCard,
-            onSurface: CoresApp.textoPrimario,
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: cores.primaria,
+            brightness: Theme.of(context).brightness,
           ),
         ),
         child: child!,
@@ -63,6 +62,8 @@ class _FormularioMetaDiariaState extends State<FormularioMetaDiaria> {
 
   @override
   Widget build(BuildContext context) {
+    final cores = context.cores;
+
     return Padding(
       padding: EdgeInsets.fromLTRB(
         24,
@@ -74,12 +75,12 @@ class _FormularioMetaDiariaState extends State<FormularioMetaDiaria> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'Nova meta',
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
-              color: CoresApp.textoPrimario,
+              color: cores.textoPrimario,
             ),
           ),
           const SizedBox(height: 16),
@@ -89,9 +90,9 @@ class _FormularioMetaDiariaState extends State<FormularioMetaDiaria> {
             textCapitalization: TextCapitalization.sentences,
             decoration: InputDecoration(
               hintText: 'Ex: Revisar anotações',
-              hintStyle: const TextStyle(color: CoresApp.textoSecundario),
+              hintStyle: TextStyle(color: cores.textoSecundario),
               filled: true,
-              fillColor: CoresApp.fundo,
+              fillColor: cores.fundo,
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
                 borderSide: BorderSide.none,
@@ -105,30 +106,23 @@ class _FormularioMetaDiariaState extends State<FormularioMetaDiaria> {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
               decoration: BoxDecoration(
-                color: CoresApp.fundo,
+                color: cores.fundo,
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Row(
                 children: [
-                  const Icon(
+                  Icon(
                     Icons.calendar_today_outlined,
                     size: 16,
-                    color: CoresApp.primaria,
+                    color: cores.primaria,
                   ),
                   const SizedBox(width: 10),
                   Text(
                     formatarDataExtenso(_dataSelecionada),
-                    style: const TextStyle(
-                      fontSize: 14,
-                      color: CoresApp.textoPrimario,
-                    ),
+                    style: TextStyle(fontSize: 14, color: cores.textoPrimario),
                   ),
                   const Spacer(),
-                  const Icon(
-                    Icons.chevron_right,
-                    size: 18,
-                    color: CoresApp.textoSecundario,
-                  ),
+                  Icon(Icons.chevron_right, size: 18, color: cores.textoSecundario),
                 ],
               ),
             ),
@@ -139,7 +133,7 @@ class _FormularioMetaDiariaState extends State<FormularioMetaDiaria> {
             child: FilledButton(
               onPressed: _salvar,
               style: FilledButton.styleFrom(
-                backgroundColor: CoresApp.primaria,
+                backgroundColor: cores.primaria,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),

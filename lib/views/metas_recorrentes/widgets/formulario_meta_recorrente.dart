@@ -45,6 +45,8 @@ class _FormularioMetaRecorrenteState extends State<FormularioMetaRecorrente> {
 
   @override
   Widget build(BuildContext context) {
+    final cores = context.cores;
+
     return Padding(
       padding: EdgeInsets.fromLTRB(
         24,
@@ -56,12 +58,12 @@ class _FormularioMetaRecorrenteState extends State<FormularioMetaRecorrente> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'Nova meta recorrente',
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
-              color: CoresApp.textoPrimario,
+              color: cores.textoPrimario,
             ),
           ),
           const SizedBox(height: 16),
@@ -71,9 +73,9 @@ class _FormularioMetaRecorrenteState extends State<FormularioMetaRecorrente> {
             textCapitalization: TextCapitalization.sentences,
             decoration: InputDecoration(
               hintText: 'Ex: Meditação',
-              hintStyle: const TextStyle(color: CoresApp.textoSecundario),
+              hintStyle: TextStyle(color: cores.textoSecundario),
               filled: true,
-              fillColor: CoresApp.fundo,
+              fillColor: cores.fundo,
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
                 borderSide: BorderSide.none,
@@ -81,12 +83,12 @@ class _FormularioMetaRecorrenteState extends State<FormularioMetaRecorrente> {
             ),
           ),
           const SizedBox(height: 16),
-          const Text(
+          Text(
             'Dias da semana',
             style: TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.w500,
-              color: CoresApp.textoSecundario,
+              color: cores.textoSecundario,
             ),
           ),
           const SizedBox(height: 10),
@@ -102,23 +104,17 @@ class _FormularioMetaRecorrenteState extends State<FormularioMetaRecorrente> {
                     vertical: 8,
                   ),
                   decoration: BoxDecoration(
-                    color: selecionado
-                        ? CoresApp.primaria
-                        : CoresApp.fundo,
+                    color: selecionado ? cores.primaria : cores.fundo,
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(
-                      color: selecionado
-                          ? CoresApp.primaria
-                          : CoresApp.divisor,
+                      color: selecionado ? cores.primaria : cores.divisor,
                     ),
                   ),
                   child: Text(
                     dia.nome,
                     style: TextStyle(
                       fontSize: 13,
-                      color: selecionado
-                          ? Colors.white
-                          : CoresApp.textoPrimario,
+                      color: selecionado ? Colors.white : cores.textoPrimario,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -132,7 +128,7 @@ class _FormularioMetaRecorrenteState extends State<FormularioMetaRecorrente> {
             child: FilledButton(
               onPressed: _salvar,
               style: FilledButton.styleFrom(
-                backgroundColor: CoresApp.primaria,
+                backgroundColor: cores.primaria,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
