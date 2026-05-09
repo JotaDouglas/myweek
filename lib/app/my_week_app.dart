@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../core/theme/cores_app.dart';
-import '../data/repositories/meta_repository_memoria.dart';
+import '../data/database/database_service.dart';
+import '../data/repositories/meta_repository_sqlite.dart';
 import '../viewmodels/metas_recorrentes_viewmodel.dart';
 import '../viewmodels/semana_viewmodel.dart';
 import '../views/navegacao/navegacao_page.dart';
@@ -12,7 +13,7 @@ class MyWeekApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final repository = MetaRepositoryMemoria();
+    final repository = MetaRepositorySqlite(DatabaseService.instance);
 
     return MultiProvider(
       providers: [
