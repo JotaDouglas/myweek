@@ -27,14 +27,13 @@ class _TelaInicialPageState extends State<TelaInicialPage> {
   @override
   Widget build(BuildContext context) {
     final vm = context.watch<SemanaViewModel>();
-    final periodo = periodoAtual();
-    final tema = _temaDoPeriodo(periodo);
+    final info = _infoDoPeriodo(periodoAtual());
 
     final total = vm.metasDoDia.length;
     final concluidas = vm.metasDoDia.where((m) => m.concluida).length;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF2F3F8),
+      backgroundColor: CoresApp.fundo,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -42,26 +41,22 @@ class _TelaInicialPageState extends State<TelaInicialPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 24),
-              _cabecalho(tema),
+              _cabecalho(info),
               const SizedBox(height: 20),
-              _cartaoSaudacao(tema),
+              _cartaoSaudacao(info),
               const SizedBox(height: 28),
               const Text(
                 'Progresso de hoje',
                 style: TextStyle(
                   fontSize: 17,
                   fontWeight: FontWeight.bold,
-                  color: Color(0xFF1A1A2E),
+                  color: CoresApp.textoPrimario,
                 ),
               ),
               const SizedBox(height: 12),
-              IndicadorProgressoDiario(
-                total: total,
-                concluidas: concluidas,
-                corAccent: tema.corAccent,
-              ),
+              IndicadorProgressoDiario(total: total, concluidas: concluidas),
               const SizedBox(height: 28),
-              _botaoVerMetas(tema),
+              _botaoVerMetas(),
               const SizedBox(height: 32),
             ],
           ),
@@ -70,7 +65,7 @@ class _TelaInicialPageState extends State<TelaInicialPage> {
     );
   }
 
-  Widget _cabecalho(_TemaPeriodo tema) {
+  Widget _cabecalho(_InfoPeriodo info) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -78,10 +73,10 @@ class _TelaInicialPageState extends State<TelaInicialPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              tema.saudacaoCurta,
+              info.saudacaoCurta,
               style: const TextStyle(
                 fontSize: 14,
-                color: Color(0xFF7A7A9D),
+                color: CoresApp.textoSecundario,
                 fontWeight: FontWeight.w400,
               ),
             ),
@@ -90,7 +85,7 @@ class _TelaInicialPageState extends State<TelaInicialPage> {
               style: TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF1A1A2E),
+                color: CoresApp.textoPrimario,
               ),
             ),
           ],
@@ -112,7 +107,7 @@ class _TelaInicialPageState extends State<TelaInicialPage> {
           ),
           child: const Icon(
             Icons.notifications_outlined,
-            color: Color(0xFF1A1A2E),
+            color: CoresApp.textoPrimario,
             size: 20,
           ),
         ),
@@ -120,16 +115,12 @@ class _TelaInicialPageState extends State<TelaInicialPage> {
     );
   }
 
-  Widget _cartaoSaudacao(_TemaPeriodo tema) {
+  Widget _cartaoSaudacao(_InfoPeriodo info) {
     final hoje = DateTime.now();
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 22),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: tema.gradiente,
-        ),
+        color: CoresApp.primaria,
         borderRadius: BorderRadius.circular(20),
       ),
       child: Row(
@@ -138,12 +129,12 @@ class _TelaInicialPageState extends State<TelaInicialPage> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(tema.icone, color: tema.corTexto, size: 40),
+              Icon(info.icone, color: Colors.white, size: 36),
               const SizedBox(height: 10),
               Text(
-                tema.saudacao,
-                style: TextStyle(
-                  color: tema.corTexto,
+                info.saudacao,
+                style: const TextStyle(
+                  color: Colors.white,
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
                 ),
@@ -152,7 +143,7 @@ class _TelaInicialPageState extends State<TelaInicialPage> {
               Text(
                 formatarDataExtenso(hoje),
                 style: TextStyle(
-                  color: tema.corTexto.withValues(alpha: 0.65),
+                  color: Colors.white.withValues(alpha: 0.65),
                   fontSize: 13,
                 ),
               ),
@@ -162,7 +153,7 @@ class _TelaInicialPageState extends State<TelaInicialPage> {
           Text(
             hoje.day.toString(),
             style: TextStyle(
-              color: tema.corTexto.withValues(alpha: 0.15),
+              color: Colors.white.withValues(alpha: 0.15),
               fontSize: 80,
               fontWeight: FontWeight.bold,
               height: 1.0,
@@ -173,7 +164,7 @@ class _TelaInicialPageState extends State<TelaInicialPage> {
     );
   }
 
-  Widget _botaoVerMetas(_TemaPeriodo tema) {
+  Widget _botaoVerMetas() {
     return GestureDetector(
       onTap: () async {
         await Navigator.push(
@@ -186,11 +177,11 @@ class _TelaInicialPageState extends State<TelaInicialPage> {
         width: double.infinity,
         padding: const EdgeInsets.symmetric(vertical: 18),
         decoration: BoxDecoration(
-          color: tema.corAccent,
+          color: CoresApp.primaria,
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: tema.corAccent.withValues(alpha: 0.35),
+              color: CoresApp.primaria.withValues(alpha: 0.35),
               blurRadius: 14,
               offset: const Offset(0, 5),
             ),
@@ -216,31 +207,22 @@ class _TelaInicialPageState extends State<TelaInicialPage> {
     );
   }
 
-  _TemaPeriodo _temaDoPeriodo(PeriodoDia periodo) {
+  _InfoPeriodo _infoDoPeriodo(PeriodoDia periodo) {
     switch (periodo) {
       case PeriodoDia.manha:
-        return const _TemaPeriodo(
-          gradiente: [CoresApp.fundoManha1, CoresApp.fundoManha2],
-          corTexto: CoresApp.textoManha,
-          corAccent: CoresApp.accentManha,
+        return const _InfoPeriodo(
           icone: Icons.wb_sunny_rounded,
           saudacao: 'Bom dia!',
           saudacaoCurta: 'Bom dia,',
         );
       case PeriodoDia.tarde:
-        return const _TemaPeriodo(
-          gradiente: [CoresApp.fundoTarde1, CoresApp.fundoTarde2],
-          corTexto: CoresApp.textoTarde,
-          corAccent: CoresApp.accentTarde,
+        return const _InfoPeriodo(
           icone: Icons.light_mode_rounded,
           saudacao: 'Boa tarde!',
           saudacaoCurta: 'Boa tarde,',
         );
       case PeriodoDia.noite:
-        return const _TemaPeriodo(
-          gradiente: [CoresApp.fundoNoite1, CoresApp.fundoNoite2],
-          corTexto: CoresApp.textoNoite,
-          corAccent: CoresApp.accentNoite,
+        return const _InfoPeriodo(
           icone: Icons.nightlight_round,
           saudacao: 'Boa noite!',
           saudacaoCurta: 'Boa noite,',
@@ -249,18 +231,12 @@ class _TelaInicialPageState extends State<TelaInicialPage> {
   }
 }
 
-class _TemaPeriodo {
-  final List<Color> gradiente;
-  final Color corTexto;
-  final Color corAccent;
+class _InfoPeriodo {
   final IconData icone;
   final String saudacao;
   final String saudacaoCurta;
 
-  const _TemaPeriodo({
-    required this.gradiente,
-    required this.corTexto,
-    required this.corAccent,
+  const _InfoPeriodo({
     required this.icone,
     required this.saudacao,
     required this.saudacaoCurta,

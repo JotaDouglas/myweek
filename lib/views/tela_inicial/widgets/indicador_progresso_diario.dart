@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
+import '../../../core/theme/cores_app.dart';
+
 class IndicadorProgressoDiario extends StatelessWidget {
   final int total;
   final int concluidas;
-  final Color corAccent;
 
   const IndicadorProgressoDiario({
     super.key,
     required this.total,
     required this.concluidas,
-    required this.corAccent,
   });
 
   @override
@@ -42,14 +42,16 @@ class IndicadorProgressoDiario extends StatelessWidget {
                   child: CircularProgressIndicator(
                     value: percentual,
                     strokeWidth: 8,
-                    backgroundColor: corAccent.withValues(alpha: 0.12),
-                    valueColor: AlwaysStoppedAnimation<Color>(corAccent),
+                    backgroundColor: CoresApp.primariaSuave,
+                    valueColor: const AlwaysStoppedAnimation<Color>(
+                      CoresApp.primaria,
+                    ),
                   ),
                 ),
                 Text(
                   percentualTexto,
-                  style: TextStyle(
-                    color: corAccent,
+                  style: const TextStyle(
+                    color: CoresApp.primaria,
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
@@ -67,7 +69,7 @@ class IndicadorProgressoDiario extends StatelessWidget {
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
-                    color: Color(0xFF1A1A2E),
+                    color: CoresApp.textoPrimario,
                   ),
                 ),
                 const SizedBox(height: 6),
@@ -75,7 +77,7 @@ class IndicadorProgressoDiario extends StatelessWidget {
                   _mensagemMotivacional(percentual),
                   style: const TextStyle(
                     fontSize: 13,
-                    color: Color(0xFF7A7A9D),
+                    color: CoresApp.textoSecundario,
                     height: 1.4,
                   ),
                 ),
