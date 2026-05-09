@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/theme/cores_app.dart';
+import '../../../core/widgets/dialogo_app.dart';
 import '../../../models/meta_recorrente.dart';
 import '../../../viewmodels/metas_recorrentes_viewmodel.dart';
 
@@ -67,31 +68,20 @@ class CardMetaRecorrente extends StatelessWidget {
     );
   }
 
-  void _confirmarRemocao(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Remover meta'),
-        content: Text('Deseja remover "${meta.titulo}"?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(),
-            child: const Text('Cancelar'),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.of(ctx).pop();
-              context
-                  .read<MetasRecorrentesViewModel>()
-                  .removerMetaRecorrente(meta.id);
-            },
-            child: const Text(
-              'Remover',
-              style: TextStyle(color: Colors.red),
-            ),
-          ),
-        ],
-      ),
+  Future<void> _confirmarRemocao(BuildContext context) async {
+    final confirmar = await DialogoApp.mostrar(
+      context,
+      titulo: 'Remover meta',
+      mensagem: 'Deseja remover "${meta.titulo}"?',
+      labelConfirmar: 'Remover',
+      labelCancelar: 'Cancelar',
+      destrutivo: true,
+      icone: Icons.delete_outline,
     );
+    if (confirmar && context.mounted) {
+      context
+          .read<MetasRecorrentesViewModel>()
+          .removerMetaRecorrente(meta.id);
+    }
   }
 }

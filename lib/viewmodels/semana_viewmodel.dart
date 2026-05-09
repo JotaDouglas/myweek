@@ -94,4 +94,11 @@ class SemanaViewModel extends ChangeNotifier {
     await _carregarMetasDoDia(_diaSelecionado);
     notifyListeners();
   }
+
+  Future<void> removerMetaDiaria(String id) async {
+    await _repository.removerMetaDiaria(id);
+    _metasDoDia.removeWhere((m) => m.id == id);
+    _totalMetasDaSemana--;
+    notifyListeners();
+  }
 }

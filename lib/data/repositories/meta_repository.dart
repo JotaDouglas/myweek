@@ -5,6 +5,7 @@ abstract class MetaRepository {
   Future<List<MetaDiaria>> buscarMetasDoDia(DateTime data);
   Future<void> salvarMetaDiaria(MetaDiaria meta);
   Future<void> alternarConclusaoDaMeta(String id);
+  Future<void> removerMetaDiaria(String id);
   Future<List<MetaRecorrente>> buscarMetasRecorrentes();
   Future<void> salvarMetaRecorrente(MetaRecorrente meta);
   Future<void> alternarAtivacaoDaMetaRecorrente(String id);

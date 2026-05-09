@@ -60,6 +60,11 @@ class MetaRepositoryMemoria implements MetaRepository {
   }
 
   @override
+  Future<void> removerMetaDiaria(String id) async {
+    _metasDiarias.removeWhere((m) => m.id == id);
+  }
+
+  @override
   Future<List<MetaRecorrente>> buscarMetasRecorrentes() async {
     return List.unmodifiable(_metasRecorrentes);
   }

@@ -71,6 +71,12 @@ class MetaRepositorySqlite implements MetaRepository {
   }
 
   @override
+  Future<void> removerMetaDiaria(String id) async {
+    final db = await _databaseService.db;
+    await db.delete('metas_diarias', where: 'id = ?', whereArgs: [id]);
+  }
+
+  @override
   Future<void> removerMetaRecorrente(String id) async {
     final db = await _databaseService.db;
     await db.delete('metas_recorrentes', where: 'id = ?', whereArgs: [id]);
