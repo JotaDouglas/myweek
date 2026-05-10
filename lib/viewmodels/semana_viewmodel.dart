@@ -15,10 +15,15 @@ class SemanaViewModel extends ChangeNotifier {
   DateTime _diaSelecionado = DateTime.now();
   List<MetaDiaria> _metasDoDia = [];
   int _totalMetasDaSemana = 0;
+  Map<String, List<MetaDiaria>> _metasPorDia = {};
 
   DateTime get diaSelecionado => _diaSelecionado;
   List<MetaDiaria> get metasDoDia => List.unmodifiable(_metasDoDia);
   int get totalMetasDaSemana => _totalMetasDaSemana;
+  Map<String, List<MetaDiaria>> get metasPorDia => Map.unmodifiable(_metasPorDia);
+
+  String _chaveDia(DateTime d) =>
+      '${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
 
   Future<void> selecionarDia(DateTime dia) async {
     _diaSelecionado = dia;
@@ -30,6 +35,18 @@ class SemanaViewModel extends ChangeNotifier {
   Future<void> inicializar() async {
     await selecionarDia(_diaSelecionado);
     await _carregarTotalDaSemana();
+  }
+
+  Future<void> carregarSemanaCompleta() async {
+    final hoje = DateTime.now();
+    final inicioSemana = hoje.subtract(Duration(days: hoje.weekday % 7));
+    _metasPorDia = {};
+    for (int i = 0; i < 7; i++) {
+      final dia = inicioSemana.add(Duration(days: i));
+      await gerarMetasRecorrentesDoDia(dia);
+      _metasPorDia[_chaveDia(dia)] = await _repository.buscarMetasDoDia(dia);
+    }
+    notifyListeners();
   }
 
   Future<void> _carregarTotalDaSemana() async {
@@ -90,6 +107,10 @@ class SemanaViewModel extends ChangeNotifier {
       await _carregarMetasDoDia(_diaSelecionado);
     }
     _totalMetasDaSemana++;
+    final chave = _chaveDia(dataAlvo);
+    if (_metasPorDia.containsKey(chave)) {
+      _metasPorDia[chave] = await _repository.buscarMetasDoDia(dataAlvo);
+    }
     notifyListeners();
   }
 
@@ -99,10 +120,35 @@ class SemanaViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> removerMetaDiaria(String id) async {
+  Future<void> atualizarMetaDiaria(MetaDiaria meta, String novoTitulo) async {
+    await _repository.salvarMetaDiaria(MetaDiaria(
+      id: meta.id,
+      titulo: novoTitulo,
+      data: meta.data,
+      concluida: meta.concluida,
+      origem: meta.origem,
+      idMetaRecorrente: meta.idMetaRecorrente,
+    ));
+    final chave = _chaveDia(meta.data);
+    if (_metasPorDia.containsKey(chave)) {
+      _metasPorDia[chave] = await _repository.buscarMetasDoDia(meta.data);
+    }
+    if (mesmoDia(meta.data, _diaSelecionado)) {
+      await _carregarMetasDoDia(_diaSelecionado);
+    }
+    notifyListeners();
+  }
+
+  Future<void> removerMetaDiaria(String id, {DateTime? data}) async {
     await _repository.removerMetaDiaria(id);
     _metasDoDia.removeWhere((m) => m.id == id);
     _totalMetasDaSemana--;
+    if (data != null) {
+      final chave = _chaveDia(data);
+      if (_metasPorDia.containsKey(chave)) {
+        _metasPorDia[chave] = await _repository.buscarMetasDoDia(data);
+      }
+    }
     notifyListeners();
   }
 }

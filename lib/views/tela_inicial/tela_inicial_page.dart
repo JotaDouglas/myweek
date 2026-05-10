@@ -6,6 +6,7 @@ import '../../core/theme/cores_app.dart';
 import '../../core/theme/tema_provider.dart';
 import '../../core/utils/formatador_data.dart';
 import '../../viewmodels/semana_viewmodel.dart';
+import '../planejamento_semana/planejamento_semana_page.dart';
 import 'widgets/indicador_progresso_diario.dart';
 
 class TelaInicialPage extends StatefulWidget {
@@ -45,6 +46,8 @@ class _TelaInicialPageState extends State<TelaInicialPage> {
               _cabecalho(cores, info),
               const SizedBox(height: 20),
               _cartaoSaudacao(info),
+              const SizedBox(height: 16),
+              _cardPlanejamento(cores),
               const SizedBox(height: 16),
               _cardTotalSemana(cores, vm.totalMetasDaSemana),
               const SizedBox(height: 28),
@@ -142,6 +145,43 @@ class _TelaInicialPageState extends State<TelaInicialPage> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _cardPlanejamento(CoresApp cores) {
+    return GestureDetector(
+      onTap: () => Navigator.of(context).push(
+        MaterialPageRoute(builder: (_) => const PlanejamentoSemanaPage()),
+      ),
+      child: AspectRatio(
+        aspectRatio: 1.0,
+        child: Container(
+          decoration: BoxDecoration(
+            color: cores.primariaSuave,
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.rocket_launch_rounded, size: 40, color: cores.primaria),
+              const SizedBox(height: 16),
+              Text(
+                'Planejar semana',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: cores.textoPrimario,
+                ),
+              ),
+              const SizedBox(height: 6),
+              Text(
+                'Organize suas metas por dia',
+                style: TextStyle(fontSize: 13, color: cores.textoSecundario),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
