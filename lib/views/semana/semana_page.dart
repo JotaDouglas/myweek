@@ -141,7 +141,7 @@ class _SemanaPageState extends State<SemanaPage> {
                   ),
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
+            padding: const EdgeInsets.fromLTRB(20, 8, 20, 12),
             child: SizedBox(
               width: double.infinity,
               child: OutlinedButton.icon(
@@ -156,7 +156,7 @@ class _SemanaPageState extends State<SemanaPage> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  padding: const EdgeInsets.symmetric(vertical: 8),
                 ),
               ),
             ),

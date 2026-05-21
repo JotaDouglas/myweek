@@ -25,25 +25,23 @@ class CardMetaDiaria extends StatelessWidget {
       ),
       child: ListTile(
         contentPadding: const EdgeInsets.fromLTRB(12, 4, 8, 4),
-        leading: GestureDetector(
-          onTap: () =>
-              context.read<SemanaViewModel>().alternarConclusaoDaMeta(meta.id),
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
-            width: 20,
-            height: 20,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: meta.concluida ? cores.primaria : Colors.transparent,
-              border: Border.all(
-                color: meta.concluida ? cores.primaria : cores.textoSecundario,
-                width: 1.5,
-              ),
+        onTap: () =>
+            context.read<SemanaViewModel>().alternarConclusaoDaMeta(meta.id),
+        leading: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          width: 20,
+          height: 20,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: meta.concluida ? cores.primaria : Colors.transparent,
+            border: Border.all(
+              color: meta.concluida ? cores.primaria : cores.textoSecundario,
+              width: 1.5,
             ),
-            child: meta.concluida
-                ? const Icon(Icons.check, size: 12, color: Colors.white)
-                : null,
           ),
+          child: meta.concluida
+              ? const Icon(Icons.check, size: 12, color: Colors.white)
+              : null,
         ),
         title: Text(
           meta.titulo,
