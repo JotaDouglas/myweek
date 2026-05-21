@@ -85,7 +85,9 @@ class _TelaInicialPageState extends State<TelaInicialPage> {
         ),
         const Spacer(),
         _BotaoCabecalho(
-          icone: tema.isDark ? Icons.light_mode_rounded : Icons.dark_mode_rounded,
+          icone: tema.isDark
+              ? Icons.light_mode_rounded
+              : Icons.dark_mode_rounded,
           cores: cores,
           onTap: tema.alternar,
         ),
@@ -155,7 +157,7 @@ class _TelaInicialPageState extends State<TelaInicialPage> {
         Expanded(
           child: _BotaoAcao(
             icone: Icons.rocket_launch_rounded,
-            label: 'Planejar',
+            label: 'Planejar Semana',
             cores: cores,
             onTap: () => Navigator.of(context).push(
               MaterialPageRoute(builder: (_) => const PlanejamentoSemanaPage()),
@@ -294,7 +296,7 @@ class _BotaoAcao extends StatelessWidget {
                 label,
                 style: TextStyle(
                   fontSize: 12,
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.w700,
                   color: cores.textoPrimario,
                 ),
                 textAlign: TextAlign.center,
