@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 
 import '../../core/theme/cores_app.dart';
 import '../../core/theme/tema_provider.dart';
-import '../../services/notification_service.dart';
 import '../metas_recorrentes/metas_recorrentes_page.dart';
 
 class ConfiguracoesPage extends StatelessWidget {
@@ -45,8 +44,6 @@ class ConfiguracoesPage extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             _ItemToggleTema(),
-            const SizedBox(height: 12),
-            const _ItemToggleNotificacoes(),
           ],
         ),
       ),
@@ -125,99 +122,6 @@ class _ItemNavegacao extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class _ItemToggleNotificacoes extends StatefulWidget {
-  const _ItemToggleNotificacoes();
-
-  @override
-  State<_ItemToggleNotificacoes> createState() =>
-      _ItemToggleNotificacoesState();
-}
-
-class _ItemToggleNotificacoesState extends State<_ItemToggleNotificacoes> {
-  bool _habilitadas = true;
-  bool _carregando = true;
-
-  @override
-  void initState() {
-    super.initState();
-    _carregar();
-  }
-
-  Future<void> _carregar() async {
-    final valor = await NotificationService.instance.notificacoesHabilitadas;
-    if (mounted) setState(() { _habilitadas = valor; _carregando = false; });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final cores = context.cores;
-
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-      decoration: BoxDecoration(
-        color: cores.fundoCard,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 44,
-            height: 44,
-            decoration: BoxDecoration(
-              color: cores.primariaSuave,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Icon(Icons.notifications_outlined, color: cores.primaria, size: 22),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Notificações diárias',
-                  style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w600,
-                    color: cores.textoPrimario,
-                  ),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  'Lembretes às 8h, 12h e 19h',
-                  style: TextStyle(fontSize: 12, color: cores.textoSecundario),
-                ),
-              ],
-            ),
-          ),
-          _carregando
-              ? const SizedBox(
-                  width: 36,
-                  height: 20,
-                  child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
-                )
-              : Switch(
-                  value: _habilitadas,
-                  onChanged: (valor) async {
-                    setState(() => _habilitadas = valor);
-                    await NotificationService.instance.setNotificacoesHabilitadas(valor);
-                  },
-                  activeThumbColor: cores.primaria,
-                  activeTrackColor: cores.primariaSuave,
-                ),
-        ],
       ),
     );
   }
