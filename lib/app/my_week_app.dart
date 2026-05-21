@@ -37,6 +37,7 @@ class MyWeekApp extends StatelessWidget {
             scaffoldBackgroundColor: const Color(0xFFF7F7F5),
             fontFamily: 'SF Pro Display',
             useMaterial3: true,
+            appBarTheme: const AppBarTheme(scrolledUnderElevation: 0),
           ),
           darkTheme: ThemeData(
             brightness: Brightness.dark,
@@ -47,6 +48,7 @@ class MyWeekApp extends StatelessWidget {
             scaffoldBackgroundColor: const Color(0xFF0F0F0E),
             fontFamily: 'SF Pro Display',
             useMaterial3: true,
+            appBarTheme: const AppBarTheme(scrolledUnderElevation: 0),
           ),
           home: const NavegacaoPage(),
         ),

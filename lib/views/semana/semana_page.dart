@@ -16,12 +16,20 @@ class SemanaPage extends StatefulWidget {
 }
 
 class _SemanaPageState extends State<SemanaPage> {
+  final _scrollController = ScrollController();
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<SemanaViewModel>().inicializar();
     });
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 
   Future<void> _abrirCalendario() async {
@@ -94,33 +102,66 @@ class _SemanaPageState extends State<SemanaPage> {
           const SizedBox(height: 20),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Text(
-              formatarData(viewModel.diaSelecionado),
-              style: TextStyle(
-                fontSize: 14,
-                color: cores.textoSecundario,
-                fontWeight: FontWeight.w500,
-              ),
+            child: Row(
+              children: [
+                Text(
+                  formatarData(viewModel.diaSelecionado),
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: cores.textoSecundario,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                const Spacer(),
+                Text(
+                  '${viewModel.metasDoDia.where((m) => m.concluida).length}/${viewModel.metasDoDia.length}',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: cores.textoSecundario,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
             ),
           ),
           const SizedBox(height: 12),
           Expanded(
             child: viewModel.metasDoDia.isEmpty
                 ? _EstadoVazio()
-                : ListView.builder(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    itemCount: viewModel.metasDoDia.length,
-                    itemBuilder: (context, index) => CardMetaDiaria(
-                      meta: viewModel.metasDoDia[index],
+                : Scrollbar(
+                    controller: _scrollController,
+                    child: ListView.builder(
+                      controller: _scrollController,
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      itemCount: viewModel.metasDoDia.length,
+                      itemBuilder: (context, index) => CardMetaDiaria(
+                        meta: viewModel.metasDoDia[index],
+                      ),
                     ),
                   ),
           ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
+            child: SizedBox(
+              width: double.infinity,
+              child: OutlinedButton.icon(
+                icon: Icon(Icons.add_rounded, size: 18, color: cores.primaria),
+                label: Text(
+                  'Nova meta',
+                  style: TextStyle(color: cores.primaria),
+                ),
+                onPressed: _abrirFormulario,
+                style: OutlinedButton.styleFrom(
+                  side: BorderSide(color: cores.primaria),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                ),
+              ),
+            ),
+          ),
         ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _abrirFormulario,
-        backgroundColor: cores.primaria,
-        child: const Icon(Icons.add, color: Colors.white),
       ),
     );
   }

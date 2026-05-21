@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../../../core/theme/cores_app.dart';
 import '../../../core/widgets/dialogo_app.dart';
+import 'formulario_meta_diaria.dart';
 import '../../../models/meta_diaria.dart';
 import '../../../viewmodels/semana_viewmodel.dart';
 
@@ -54,11 +55,48 @@ class CardMetaDiaria extends StatelessWidget {
             decorationColor: cores.textoSecundario,
           ),
         ),
-        trailing: IconButton(
-          icon: Icon(Icons.delete_outline, size: 20, color: cores.textoSecundario),
-          onPressed: () => _confirmarRemocao(context),
+        trailing: PopupMenuButton<String>(
+          icon: Icon(Icons.more_vert, size: 20, color: cores.textoSecundario),
+          onSelected: (value) {
+            if (value == 'editar') _abrirEdicao(context, cores);
+            if (value == 'excluir') _confirmarRemocao(context);
+          },
+          itemBuilder: (_) => [
+            PopupMenuItem(
+              value: 'editar',
+              child: Row(
+                children: [
+                  Icon(Icons.edit_outlined, size: 18, color: cores.textoPrimario),
+                  const SizedBox(width: 10),
+                  Text('Editar', style: TextStyle(color: cores.textoPrimario)),
+                ],
+              ),
+            ),
+            PopupMenuItem(
+              value: 'excluir',
+              child: Row(
+                children: [
+                  const Icon(Icons.delete_outline, size: 18, color: Colors.red),
+                  const SizedBox(width: 10),
+                  const Text('Excluir', style: TextStyle(color: Colors.red)),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
+    );
+  }
+
+  void _abrirEdicao(BuildContext context, CoresApp cores) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: cores.fundoCard,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (_) => FormularioMetaDiaria(metaParaEditar: meta),
     );
   }
 

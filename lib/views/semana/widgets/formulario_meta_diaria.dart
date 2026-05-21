@@ -3,10 +3,13 @@ import 'package:provider/provider.dart';
 
 import '../../../core/theme/cores_app.dart';
 import '../../../core/utils/formatador_data.dart';
+import '../../../models/meta_diaria.dart';
 import '../../../viewmodels/semana_viewmodel.dart';
 
 class FormularioMetaDiaria extends StatefulWidget {
-  const FormularioMetaDiaria({super.key});
+  final MetaDiaria? metaParaEditar;
+
+  const FormularioMetaDiaria({super.key, this.metaParaEditar});
 
   @override
   State<FormularioMetaDiaria> createState() => _FormularioMetaDiariaState();
@@ -16,10 +19,17 @@ class _FormularioMetaDiariaState extends State<FormularioMetaDiaria> {
   final _controller = TextEditingController();
   late DateTime _dataSelecionada;
 
+  bool get _editando => widget.metaParaEditar != null;
+
   @override
   void initState() {
     super.initState();
-    _dataSelecionada = context.read<SemanaViewModel>().diaSelecionado;
+    if (_editando) {
+      _controller.text = widget.metaParaEditar!.titulo;
+      _dataSelecionada = widget.metaParaEditar!.data;
+    } else {
+      _dataSelecionada = context.read<SemanaViewModel>().diaSelecionado;
+    }
   }
 
   @override
@@ -54,9 +64,12 @@ class _FormularioMetaDiariaState extends State<FormularioMetaDiaria> {
   void _salvar() {
     final titulo = _controller.text.trim();
     if (titulo.isEmpty) return;
-    context
-        .read<SemanaViewModel>()
-        .adicionarMetaManual(titulo, data: _dataSelecionada);
+    final vm = context.read<SemanaViewModel>();
+    if (_editando) {
+      vm.atualizarMetaDiaria(widget.metaParaEditar!, titulo);
+    } else {
+      vm.adicionarMetaManual(titulo, data: _dataSelecionada);
+    }
     Navigator.of(context).pop();
   }
 
@@ -76,7 +89,7 @@ class _FormularioMetaDiariaState extends State<FormularioMetaDiaria> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Nova meta',
+            _editando ? 'Editar meta' : 'Nova meta',
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
@@ -139,7 +152,7 @@ class _FormularioMetaDiariaState extends State<FormularioMetaDiaria> {
                 ),
                 padding: const EdgeInsets.symmetric(vertical: 14),
               ),
-              child: const Text('Adicionar'),
+              child: Text(_editando ? 'Salvar' : 'Adicionar'),
             ),
           ),
         ],
