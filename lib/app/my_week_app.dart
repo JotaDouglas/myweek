@@ -4,12 +4,37 @@ import 'package:provider/provider.dart';
 import '../core/theme/tema_provider.dart';
 import '../data/database/database_service.dart';
 import '../data/repositories/meta_repository_sqlite.dart';
+import '../services/notification_service.dart';
 import '../viewmodels/metas_recorrentes_viewmodel.dart';
 import '../viewmodels/semana_viewmodel.dart';
 import '../views/navegacao/navegacao_page.dart';
 
-class MyWeekApp extends StatelessWidget {
+class MyWeekApp extends StatefulWidget {
   const MyWeekApp({super.key});
+
+  @override
+  State<MyWeekApp> createState() => _MyWeekAppState();
+}
+
+class _MyWeekAppState extends State<MyWeekApp> with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      NotificationService.instance.agendarNotificacoesDiarias();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
